@@ -69,5 +69,3 @@ spec:
               secretKeyRef:
                 key: AWS_SECRET_KEY
                 name: jungeun-app-secret
-
-

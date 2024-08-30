@@ -2,76 +2,73 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
+  namespace: ro
 spec:
-  replicas: 2 # 최대 개수
+  replicas: 2
   selector:
     matchLabels:
-      app: my-nginx # 일치 1 : 시작
+      app: my-nginx
   template:
     metadata:
       labels:
-        app: my-nginx # 일치 2
+        app: my-nginx
     spec:
       containers:
         - name: nginx
           image: nginx
           ports:
-          - containerPort: 80
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
-metadata:
+metadata: 
   name: nginx-service
+  namespace: ro  # Service의 namespace 설정
 spec:
-# ingress를 적용하기 위해 ClusterIp 적용
-  type: ClusterIp
+  # ingress를 적용하기 위해 ClusterIP로 변경
+  type: ClusterIP
   ports:
-  - name: http
-    port: 80
-    targetPort: 80
+    - name: http
+      port: 80
+      targetPort: 80
   selector:
-    app: my-nginx # 일치 3 : 완료
-
+    app: my-nginx
 ---
 # ingress(서비스를 routing 해주는) 정의 시작
 # ingress-controller 설치는 별도 필요
 # ingress-controller도 nginx 기반으로 구성되어있음
 # ingress-controller를 설치시에 alb 생성되고, Ingress 자원과 함께 서비스 라우팅 수행
 ## alb가 엔드포인트로 활용된다
+# ingress controller 1개에서 여러개의 ingress로 라우팅
 
 # kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/aws/deploy.yaml
 
-apiVersion: networking.k8s.id/v1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: my-nginx-ingress
+  namespace: ro  # Ingress의 namespace 설정
   annotations:
-    kubernetes.id/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /$1 # 첫번째 prefix 제거 후 endpoint 전달
-spec: 
-  rules: 
-  - host: server.araboka.store
-    http:
-      paths:
-      - path: /product-service/(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx-service
-            port:
-              number: 80
-      - path: /order-service/(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx-service
-            port:
-              number: 80
-      - path: /member-service/(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: nginx-service
-            port:
-              number: 80
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1 # 첫번째 prefix제거후 endpoint 전달
+    
+spec:
+  rules:
+    - host: server.araboka.store
+      http: 
+        paths:
+          - path: /product-service/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-service
+                port: 
+                  number: 80
+          - path: /order-service/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-service
+                port: 
+                  number: 80
 

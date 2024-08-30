@@ -1,0 +1,30 @@
+# docker 빌드 후 ecr 업로드
+name: deploy ordersystem with k8s
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout github
+        uses: actions/checkout@v2
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.25.9"
+        id: install
+
+      - name: configure aws
+        uses: aws-actions/configure-aws-credentials@v1
+				with:
+					aws-access-key-id: ${{secret.AWS_KEY}}
+					aws-secret-access-key: ${{secret.AWS_SECRET}}
+					aws-region: ap-northeast-2
+
+			- name: update cluster information
+				run: aws eks update-kubeconfig --name teenkiri --region ap-northeast-2
+
+# kubectl apply

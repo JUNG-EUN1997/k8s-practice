@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2 # 최대 개수
+  selector:
+    matchLabels:
+      app: my-nginx # 일치 1 : 시작
+  template:
+    metadata:
+      labels:
+        app: my-nginx # 일치 2
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+          - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+# ingress를 적용하기 위해 ClusterIp 적용
+  type: ClusterIp
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    app: my-nginx # 일치 3 : 완료
+
+---
+# ingress(서비스를 routing 해주는) 정의 시작
+# ingress-controller 설치는 별도 필요
+# ingress-controller도 nginx 기반으로 구성되어있음
+# ingress-controller를 설치시에 alb 생성되고, Ingress 자원과 함께 서비스 라우팅 수행
+## alb가 엔드포인트로 활용된다
+
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/aws/deploy.yaml
+
+apiVersion: networking.k8s.id/v1
+kind: Ingress
+metadata:
+  name: my-nginx-ingress
+  annotations:
+    kubernetes.id/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1 # 첫번째 prefix 제거 후 endpoint 전달
+spec: 
+  rules: 
+  - host: server.araboka.store
+    http:
+      paths:
+      - path: /product-service/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+      - path: /order-service/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+      - path: /member-service/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+

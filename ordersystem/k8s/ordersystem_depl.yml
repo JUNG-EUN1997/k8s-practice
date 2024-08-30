@@ -33,22 +33,22 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: REDIS_HOST
-                name: jungeun-app-secret
+              name: jungeun-app-secret
           - name: DB_HOST
             valueFrom:
               secretKeyRef:
                 key: DB_HOST
-                name: jungeun-app-secret
+              name: jungeun-app-secret
           - name: DB_USERNAME
             valueFrom:
               secretKeyRef:
                 key: DB_USERNAME
-                name: jungeun-app-secret
+              name: jungeun-app-secret
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: DB_PASSWORD
-                name: jungeun-app-secret
+              name: jungeun-app-secret
           - name: JWT_SECRET
             valueFrom:
               secretKeyRef:
@@ -58,14 +58,14 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: JWT_SECRET_RT
-                name: jungeun-app-secret
+              name: jungeun-app-secret
           - name: AWS_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 key: AWS_ACCESS_KEY
-                name: jungeun-app-secret
+              name: jungeun-app-secret
           - name: AWS_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 key: AWS_SECRET_KEY
-                name: jungeun-app-secret
+              name: jungeun-app-secret

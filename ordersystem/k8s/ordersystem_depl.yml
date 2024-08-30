@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-system-deployment
+  namespace: ro
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ordersystem
+  template:
+    metadata:
+      labels:
+        app: ordersystem
+    spec:
+      containers:
+        - name: ordersystem
+        #aws의 ecr 주소 사용
+          image: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com/jungeun-ordersystem:latest
+          ports:
+          - containerPort: 8080
+          resources:
+            # 최대 할당 가능량
+            limits:
+              cpu: "1"
+              memory: "500Mi"
+            # 최소 할당량
+            requests:
+              cpu: "0.5"
+              memory: "250Mi"
+          env:
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                key: REDIS_HOST
+                name: jungeun-app-secret
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                key: DB_HOST
+                name: jungeun-app-secret
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: DB_USERNAME
+                name: jungeun-app-secret
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: DB_PASSWORD
+                name: jungeun-app-secret
+          - name: JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: JWT_SECRET
+              name: jungeun-app-secret
+          - name: JWT_SECRET_RT
+            valueFrom:
+              secretKeyRef:
+                key: JWT_SECRET_RT
+                name: jungeun-app-secret
+          - name: AWS_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_ACCESS_KEY
+                name: jungeun-app-secret
+          - name: AWS_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                key: AWS_SECRET_KEY
+                name: jungeun-app-secret
+
+

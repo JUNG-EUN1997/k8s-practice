@@ -69,3 +69,21 @@ spec:
               secretKeyRef:
                 key: AWS_SECRET_KEY
                 name: jungeun-app-secrets
+          # 무중단 배포를 위한컨테이너 health check
+          readinessProbe:
+            httpGet:
+              path: /product/list
+              port: 8080
+            # 컨테이너 시작 후 지연시간 설정
+            ## 생성이 되자마자 보내면, 분명히 안될테니 불필요한 자원낭비가 된다
+            initialDelaySeconds: 10 # 10초
+            # 실패 시, 확인 반복 주기
+            periodSeconds: 10
+            # 요청 타임아웃 설정
+            timeoutSeconds: 1
+            # 성공 인식 횟수 설정
+            successThreshold: 1
+            # 연속 실패 횟수 : 연속 5회 실패 시, 건강하지 않은 상태로 판단. 기존서버 종료 X
+            failureThreshold: 5
+
+

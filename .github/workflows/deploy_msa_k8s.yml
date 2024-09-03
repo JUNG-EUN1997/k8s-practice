@@ -43,7 +43,7 @@ jobs:
 
         # 이미지 변경
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:latest -f \
+          docker build -t $REGISTRY/$REPOSITORY:latest \
           -f ./msa/member/Dockerfile ./msa/member
           docker push $REGISTRY/$REPOSITORY:latest
 
@@ -60,7 +60,7 @@ jobs:
 
         # 이미지 변경
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:latest -f \
+          docker build -t $REGISTRY/$REPOSITORY:latest \
           -f ./msa/order/Dockerfile ./msa/order  
           docker push $REGISTRY/$REPOSITORY:latest
 
@@ -77,7 +77,7 @@ jobs:
 
         # 이미지 변경
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:latest -f \
+          docker build -t $REGISTRY/$REPOSITORY:latest \
           -f ./msa/product/Dockerfile ./msa/product  
           docker push $REGISTRY/$REPOSITORY:latest
 

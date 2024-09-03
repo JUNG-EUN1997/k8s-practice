@@ -4,7 +4,7 @@ metadata:
   name: order-system-deployment
   namespace: ro
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ordersystem
@@ -69,7 +69,7 @@ spec:
               secretKeyRef:
                 key: AWS_SECRET_KEY
                 name: jungeun-app-secrets
-          # 무중단 배포를 위한컨테이너 health check
+          # 무중단 배포를 위한 컨테이너 health check
           readinessProbe:
             httpGet:
               path: /product/list

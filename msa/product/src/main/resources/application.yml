@@ -1,0 +1,44 @@
+spring:
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${DB_HOST}/ordersystem
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show_sql: true
+
+#  eureka용 서비스 이름 명명
+#  spring 안에 써야함!
+  application:
+    name: product-service
+
+logging:
+  level:
+    root: info
+jwt:
+  expiration: 30
+  secretKey: ${JWT_SECRET} #변수화한 tokenKey 값
+  expirationRt: 14400
+  secretKeyRt: ${JWT_SECRET_RT} #변수화한 rt 값
+
+# aws s3 설정
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-southeast-2
+    s3:
+      bucket: jungeun-file
+
+

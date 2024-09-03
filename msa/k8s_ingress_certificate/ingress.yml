@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ordersystem-ingress
+  namespace: ro  # Ingress의 namespace 설정
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1 # 첫번째 prefix제거후 endpoint 전달
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    
+spec:
+  tls:
+  - hosts:
+    - "server.araboka.store"
+    secretName: jungeun-com-tls
+  rules:
+    - host: server.araboka.store
+      http: 
+        paths:
+          # - path: /product-service/(.*) # msa가 아니라 중간 product... 필요 X
+          - path: /member-service/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: member-service
+                port: 
+                  number: 80
+          - path: /order-service/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port: 
+                  number: 80
+          - path: /product-service/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: product-service
+                port: 
+                  number: 80
